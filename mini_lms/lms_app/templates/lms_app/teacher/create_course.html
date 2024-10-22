@@ -1,0 +1,86 @@
+{% extends 'lms_app/base.html' %}
+
+{% block content %}
+<style>
+    /* Custom styles for the course creation form */
+    .course-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .course-card {
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        background: white;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 5px rgba(50, 150, 255, 0.5);
+        border-color: #3498db;
+    }
+
+    .btn-primary {
+        border-radius: 20px;
+        background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(120deg, #2575fc 0%, #6a11cb 100%);
+        transform: translateY(-3px);
+    }
+
+    .btn-secondary {
+        border-radius: 20px;
+    }
+</style>
+
+<div class="course-container">
+    <h1 class="text-center m-4">Create a New Course</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="card course-card mb-4">
+            <div class="card-body">
+                <!-- Title field -->
+                <div class="form-group mb-4">
+                    <label for="id_title" class="form-label">Title</label>
+                    <input type="text" name="title" id="id_title" class="form-control"
+                        placeholder="Enter the course title">
+                </div>
+
+                <!-- Description field -->
+                <div class="form-group mb-4">
+                    <label for="id_description" class="form-label">Description</label>
+                    <textarea name="description" id="id_description" class="form-control" rows="6"
+                        placeholder="Enter course description"></textarea>
+                </div>
+
+                <!-- Duration field -->
+                <div class="form-group mb-4">
+                    <label for="id_duration" class="form-label">Duration</label>
+                    <input type="text" name="duration" id="id_duration" class="form-control"
+                        placeholder="Enter the duration (e.g., '3 hours', '6 weeks')">
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit and Cancel buttons -->
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Create Course</button>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

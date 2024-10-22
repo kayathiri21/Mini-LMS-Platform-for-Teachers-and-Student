@@ -1,0 +1,70 @@
+{% extends 'lms_app/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<style>
+    /* Custom styles for login page */
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+
+    }
+
+    .login-card {
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        background: white;
+        padding: 2rem;
+    }
+
+    .login-title {
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .custom-btn {
+        border-radius: 20px;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .custom-btn:hover {
+        background: rgba(0, 123, 255, 0.1);
+        transform: translateY(-3px);
+    }
+
+    .footer-links a {
+        color: #6c757d;
+        text-decoration: none;
+    }
+
+    .footer-links a:hover {
+        color: #007bff;
+        text-decoration: underline;
+    }
+</style>
+
+<div class="login-container">
+    <div class="card login-card">
+        <div class="card-body">
+            <h2 class="card-title text-center login-title">Login</h2>
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <br>
+                <button type="submit" class="btn btn-primary custom-btn w-100">Login</button>
+            </form>
+
+            <div class="mt-3 text-center footer-links">
+                <p>Don't have an account?</p>
+                <a href="{% url 'student_signup' %}" class="btn btn-outline-primary me-2 custom-btn">Sign Up as
+                    Student</a>
+                <a href="{% url 'teacher_signup' %}" class="btn btn-outline-primary custom-btn">Sign Up as Teacher</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

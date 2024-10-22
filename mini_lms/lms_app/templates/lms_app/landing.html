@@ -1,0 +1,83 @@
+{% extends 'lms_app/base.html' %}
+
+{% block title %}Welcome to Mini LMS{% endblock %}
+
+{% block content %}
+<style>
+    /* Custom styles for landing page */
+    .gradient-background {
+        background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        padding: 4rem 0;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+    .card-custom {
+        border-radius: 15px;
+        transition: transform 0.3s ease;
+    }
+
+    .card-custom:hover {
+        transform: translateY(-5px);
+    }
+
+    .welcome-text {
+        margin-bottom: 2rem;
+        opacity: 0.8;
+    }
+
+    .btn-custom {
+        border-radius: 20px;
+        padding: 0.5rem 1.5rem;
+        transition: background 0.3s ease;
+    }
+
+    .btn-custom:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .card-title {
+        font-weight: bold;
+    }
+</style>
+
+<div class="container py-5">
+    <!-- Welcome Section -->
+    <div class="gradient-background mb-5">
+        <h1 class="display-4 fw-bold">Welcome to Mini LMS</h1>
+        <p class="lead welcome-text">Your gateway to interactive learning and teaching</p>
+    </div>
+
+    <!-- Student and Teacher Options -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="card card-custom border-left-primary shadow h-100">
+                <div class="card-body text-center d-flex flex-column">
+                    <h3 class="card-title mb-3">Students</h3>
+                    <p class="card-text text-muted mb-4">Access your courses and take quizzes</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-custom mb-2 w-100">Login</a>
+                        <a href="{% url 'student_signup' %}" class="btn btn-outline-primary btn-custom w-100">Sign Up as
+                            Student</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card card-custom border-left-success shadow h-100">
+                <div class="card-body text-center d-flex flex-column">
+                    <h3 class="card-title mb-3">Teachers</h3>
+                    <p class="card-text text-muted mb-4">Create courses and manage your classes</p>
+                    <div class="mt-auto">
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-custom mb-2 w-100">Login</a>
+                        <a href="{% url 'teacher_signup' %}" class="btn btn-outline-success btn-custom w-100">Sign Up as
+                            Teacher</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

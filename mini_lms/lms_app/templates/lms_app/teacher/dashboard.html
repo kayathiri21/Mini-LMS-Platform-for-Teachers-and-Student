@@ -1,0 +1,225 @@
+{% extends 'lms_app/base.html' %}
+
+{% block content %}
+<style>
+    /* Custom gradients and colors */
+    .gradient-header {
+        background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        margin-top: 80px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .courses-card {
+        background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+    }
+
+    .quizzes-card {
+        background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+    }
+
+    .custom-header {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        border-radius: 15px 15px 0 0;
+        padding: 1rem;
+        color: #2c3e50;
+        font-weight: bold;
+    }
+
+    .custom-badge {
+        padding: 0.5em 1em;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+
+    .custom-list-item {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .custom-list-item:hover {
+        transform: scale(1.02);
+    }
+
+    .icon-container {
+        background: rgba(255, 255, 255, 0.3);
+        padding: 1rem;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stats-icon {
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .custom-btn {
+        border-radius: 20px;
+        padding: 0.5rem 1.5rem;
+        border: none;
+        background: rgba(255, 255, 255, 0.9);
+        color: #2c3e50;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .custom-btn:hover {
+        background: white;
+        transform: translateX(5px);
+    }
+</style>
+
+<div class="container-fluid py-4 ">
+    <!-- Dashboard Header -->
+    <div class="gradient-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="display-4 fw-bold mb-0">Teacher Dashboard</h1>
+                <p class="opacity-75 fs-5">Welcome back, {{ request.user.first_name|default:request.user.username }}</p>
+            </div>
+            <div>
+                <a href="{% url 'create_course' %}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-2"></i>New Course
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stats-card shadow h-100">
+                <div class="card-body" style="background: linear-gradient(120deg, #4e54c8 0%, #8f94fb 100%);">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <div class="text-white mb-1 text-uppercase fs-6">Total Courses</div>
+                            <div class="h2 mb-0 text-white fw-bold">{{ total_courses }}</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="icon-container">
+                                <i class="fas fa-graduation-cap stats-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stats-card shadow h-100">
+                <div class="card-body" style="background: linear-gradient(120deg, #00b09b 0%, #96c93d 100%);">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <div class="text-white mb-1 text-uppercase fs-6">Total Quizzes</div>
+                            <div class="h2 mb-0 text-white fw-bold">{{ total_quizzes }}</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="icon-container">
+                                <i class="fas fa-clipboard-list stats-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stats-card shadow h-100">
+                <div class="card-body" style="background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <div class="text-white mb-1 text-uppercase fs-6">Total Students</div>
+                            <div class="h2 mb-0 text-white fw-bold">{{ total_students }}</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="icon-container">
+                                <i class="fas fa-users stats-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Courses and Quizzes Section -->
+    <div class="row">
+        <!-- Courses Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow courses-card">
+                <div class="custom-header">
+                    <i class="fas fa-book-open me-2"></i>Your Courses
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for course in courses %}
+                        <div class="custom-list-item p-3">
+                            <a href="{% url 'course_detail' course.id %}" class="text-decoration-none text-dark">
+                                <h6 class="mb-1">{{ course.title }}</h6>
+                                <p class="text-muted small mb-0">Created: {{ course.created_at|date:"M d, Y" }} •
+                                    {{course.student_count }} Students</p>
+                            </a>
+                        </div>
+                        {% empty %}
+                        <div class="custom-list-item p-3">You have not created any courses yet.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Quiz Submissions and Feedback Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow quizzes-card">
+                <div class="custom-header">
+                    <i class="fas fa-chart-line me-2"></i>Recent Quiz Submissions
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for submission in recent_quizzes %}
+                        <div class="custom-list-item p-3">
+                            <h6 class="mb-2">{{ submission.quiz.title }}</h6>
+                            <span
+                                class="custom-badge {% if submission.score >= 70 %}bg-success{% else %}bg-danger{% endif %}">
+                                {{ submission.score }}%
+                            </span>
+
+                            <!-- Feedback Form -->
+                            <form method="POST" class="mt-2">
+                                {% csrf_token %}
+                                <textarea name="feedback" placeholder="Add feedback here..." required
+                                    class="form-control mb-2"></textarea>
+                                <input type="hidden" name="submission_id" value="{{ submission.id }}">
+                                <button type="submit" class="btn custom-btn">Submit Feedback</button>
+                            </form>
+                        </div>
+                        {% empty %}
+                        <div class="custom-list-item p-3">No quiz submissions yet.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

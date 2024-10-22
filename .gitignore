@@ -1,0 +1,58 @@
+# Django specific files
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+db.sqlite3-journal
+
+# Django environment settings
+.env
+*.env
+
+# Local virtual environments
+venv/
+ENV/
+env/
+.virtualenv/
+
+# macOS system files
+.DS_Store
+
+# Backup files
+*.bak
+*.swp
+*~
+
+# PyCharm specific files
+.idea/
+
+# VSCode specific files
+.vscode/
+
+# Python package files
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Migrations
+*/migrations/*
+
+# Static files (optional, if you're building on the server)
+staticfiles/
+media/
+
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+
+# Coverage reports
+htmlcov/
+.coverage
+.tox/
+.nox/
+
+# pipenv & poetry files (if applicable)
+Pipfile
+Pipfile.lock
+poetry.lock

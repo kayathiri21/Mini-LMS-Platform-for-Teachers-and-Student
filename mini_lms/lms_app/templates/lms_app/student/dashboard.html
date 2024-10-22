@@ -1,0 +1,255 @@
+{% extends 'lms_app/base.html' %}
+
+{% block content %}
+<style>
+    /* Custom gradients and colors */
+    .gradient-header {
+        background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        margin-top: 80px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .courses-card {
+        background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+    }
+
+    .quizzes-card {
+        background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+    }
+
+    .available-card {
+        background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+    }
+
+    .feedback-card {
+        background: linear-gradient(120deg, #ffafbd 0%, #ffc3a0 100%);
+    }
+
+    .custom-header {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        border-radius: 15px 15px 0 0;
+        padding: 1rem;
+        color: #2c3e50;
+        font-weight: bold;
+    }
+
+    .custom-badge {
+        padding: 0.5em 1em;
+        border-radius: 20px;
+        font-weight: 600;
+    }
+
+    .custom-list-item {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .custom-list-item:hover {
+        transform: scale(1.02);
+    }
+
+    .icon-container {
+        background: rgba(255, 255, 255, 0.3);
+        padding: 1rem;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stats-icon {
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .custom-btn {
+        border-radius: 20px;
+        padding: 0.5rem 1.5rem;
+        border: none;
+        background: rgba(255, 255, 255, 0.9);
+        color: #2c3e50;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .custom-btn:hover {
+        background: white;
+        transform: translateX(5px);
+    }
+
+    @media (max-width: 768px) {
+        .gradient-header {
+            margin-top: 40px;
+        }
+
+        .custom-header {
+            font-size: 1.25rem;
+        }
+
+        .stats-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Dashboard Header -->
+    <div class="gradient-header">
+        <h1 class="display-4 fw-bold mb-0">Student Dashboard</h1>
+        <p class="opacity-75 fs-5">Welcome back, {{ request.user.first_name|default:request.user.username }}</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stats-card shadow h-100">
+                <div class="card-body" style="background: linear-gradient(120deg, #4e54c8 0%, #8f94fb 100%);">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <div class="text-white mb-1 text-uppercase fs-6">Total Enrolled Courses</div>
+                            <div class="h2 mb-0 text-white fw-bold">{{ total_courses }}</div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon-container">
+                                <i class="fas fa-graduation-cap stats-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card stats-card shadow h-100">
+                <div class="card-body" style="background: linear-gradient(120deg, #00b09b 0%, #96c93d 100%);">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <div class="text-white mb-1 text-uppercase fs-6">Completed Quizzes</div>
+                            <div class="h2 mb-0 text-white fw-bold">{{ completed_quizzes }}</div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon-container">
+                                <i class="fas fa-clipboard-list stats-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="row">
+        <!-- Enrolled Courses Section -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow courses-card">
+                <div class="custom-header">
+                    <i class="fas fa-book-open me-2"></i>Enrolled Courses
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for enrollment in enrollments %}
+                        <div class="custom-list-item p-3">
+                            <a href="{% url 'course_detail' enrollment.course.id %}"
+                                class="text-decoration-none text-dark">
+                                <h6 class="mb-1">{{ enrollment.course.title }}</h6>
+                                <p class="text-muted small mb-0">Course ID: {{ enrollment.course.id }}</p>
+                            </a>
+                        </div>
+                        {% empty %}
+                        <div class="custom-list-item p-3">You are not enrolled in any courses.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Quiz Submissions -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow quizzes-card">
+                <div class="custom-header">
+                    <i class="fas fa-chart-line me-2"></i>Recent Quiz Submissions
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for submission in recent_submissions %}
+                        <div class="custom-list-item p-3">
+                            <h6 class="mb-2">{{ submission.quiz.title }}</h6>
+                            <span
+                                class="custom-badge {% if submission.score >= 70 %}bg-success{% else %}bg-danger{% endif %}">
+                                {{ submission.score }}%
+                            </span>
+                        </div>
+                        {% empty %}
+                        <div class="custom-list-item p-3">No quiz submissions yet.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Quizzes -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow available-card">
+                <div class="custom-header">
+                    <i class="fas fa-tasks me-2"></i>Available Quizzes
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for quiz in available_quizzes %}
+                        <div class="custom-list-item p-3 d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">{{ quiz.title }}</h6>
+                            <a href="{% url 'take_quiz' quiz.id %}" class="custom-btn">
+                                Take Quiz <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                        {% empty %}
+                        <div class="custom-list-item p-3">No quizzes available.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teacher Feedback Section -->
+        <div class="col-lg-12 mb-4">
+            <div class="card shadow feedback-card">
+                <div class="custom-header">
+                    <i class="fas fa-comments me-2"></i>Teacher Feedback
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for feedback in feedbacks %}
+                        <div class="custom-list-item p-3">
+                            <h6 class="mb-1">{{ feedback.teacher.name }}</h6>
+                            <p class="text-muted small mb-0">{{ feedback.content }}</p>
+                        </div>
+                        {% empty %}
+                        <div class="custom-list-item p-3">No feedback available.</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
